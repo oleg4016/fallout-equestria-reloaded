@@ -21,7 +21,7 @@ TaskRunner::TaskRunner(QObject *parent) : QObject(parent)
 
 }
 
-void TaskRunner::update(qint64 delta)
+inline void TaskRunner::runTasks(qint64 delta)
 {
   TaskUpdateLock updateLock(*this);
 
@@ -58,6 +58,14 @@ void TaskRunner::update(qint64 delta)
     else
       it++;
   }
+}
+
+void TaskRunner::update(qint64 delta)
+{
+  runTasks(delta);
+  for (auto callback : pendingOperations)
+    callback();
+  pendingOperations.clear();
   for (const Task& task : pendingAdditions)
     tasks << task;
   pendingAdditions.clear();
@@ -145,11 +153,18 @@ bool TaskRunner::removeTask(const QString &name)
     }
     return true;
   }
+  else
+    pendingOperations << [=]{ removeTask(name); };
   return false;
 }
 
 void TaskRunner::decreaseIterationsFor(const QString &name, int iterationCount)
 {
+  if (updating)
+  {
+    pendingOperations << [=]{ decreaseIterationsFor(name, iterationCount); };
+    return ;
+  }
   for (auto it = tasks.begin() ; it != tasks.end() ;)
   {
     if (it->name == name)

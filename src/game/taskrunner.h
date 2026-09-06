@@ -44,11 +44,13 @@ public:
 signals:
 
 private:
+  void runTasks(qint64 delta);
   bool runTask(Task&, int iterations);
   int countTaskOfType(const QString& name) const;
 
   bool updating = false;
   QList<Task> tasks, pendingAdditions;
+  QList<std::function<void()>> pendingOperations;
   ScriptController* script = nullptr;
 };
 
