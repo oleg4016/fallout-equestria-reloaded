@@ -122,6 +122,7 @@ Item {
           Layout.fillHeight: true
           Layout.fillWidth: true
           inventory: controller.npcInventory
+          itemFilter: function(item) { return controller.canSell(item); }
           dragZone: root
           onItemSelected: {
             playerInventory.selectedObject = playerStash.selectedObject = npcStash.selectedObject = null;

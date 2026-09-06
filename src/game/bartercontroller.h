@@ -29,6 +29,7 @@ public:
   Q_INVOKABLE void closeBarter();
   Q_INVOKABLE void concludeBarter();
   Q_INVOKABLE bool agreeToBarter();
+  Q_INVOKABLE bool canSell(InventoryItem*) const;
 
   Q_INVOKABLE void moveToPlayerInventory(InventoryItem*, int amount = -1);
   Q_INVOKABLE void moveToPlayerStash(InventoryItem*, int amount = -1);

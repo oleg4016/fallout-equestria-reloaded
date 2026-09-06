@@ -49,6 +49,13 @@ bool BarterController::agreeToBarter()
   return playerStash->evaluateValue(npc, player) >= npcStash->evaluateValue(player, npc);
 }
 
+bool BarterController::canSell(InventoryItem* item) const
+{
+  if (script && script->hasMethod("canSell"))
+    return script->call("canSell", QJSValueList() << item->asJSValue()).toBool();
+  return true;
+}
+
 void BarterController::addInventory(const QString &title, Inventory* inventory)
 {
   qDebug() << "Adding inventory" << inventory << "with title" << title;

@@ -10,6 +10,7 @@ Pane {
   property QtObject inventory
   property QtObject selectedObject
   property alias typeFilter: categoryFilter.currentText
+  property var itemFilter: null
   property var items: []
   property var dragZone
   id: root
@@ -20,20 +21,20 @@ Pane {
   signal itemDropped(QtObject inventoryItem)
 
   function updateItemList() {
-    if (typeFilter !== "") {
-      const list = [];
+    const list = [];
 
-      for (var i = 0 ; i < inventory.items.length ; ++i) {
-        if (inventory.items[i].category === typeFilter)
-          list.push(inventory.items[i]);
-      }
-      items = list;
+    for (var i = 0 ; i < inventory.items.length ; ++i) {
+      if (typeFilter !== "" && inventory.items[i].category !== typeFilter)
+        continue ;
+      if (itemFilter !== null && !itemFilter(inventory.items[i]))
+        continue ;
+      list.push(inventory.items[i]);
     }
-    else
-      items = inventory.items;
+    items = list;
   }
 
   onTypeFilterChanged: updateItemList()
+  onItemFilterChanged: updateItemList()
   onInventoryChanged:  updateItemList()
 
   Connections {
