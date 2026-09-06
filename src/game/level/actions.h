@@ -37,6 +37,9 @@ public:
   void             pickUpItem(Character*, InventoryItem*);
   Q_INVOKABLE bool canSneak(Character*);
   Q_INVOKABLE bool useSneak(Character*);
+  Q_INVOKABLE int  getUseSuccessRate(DynamicObject*) const;
+  Q_INVOKABLE int  getUseAtSuccessRate(int x, int y) const;
+  Q_INVOKABLE int  getTargetZoneSize() const;
 
 signals:
   void activeItemChanged();

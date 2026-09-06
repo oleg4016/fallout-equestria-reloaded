@@ -30,7 +30,7 @@ Loader {
   Component {
     id: tileZoneComponent
     Item {
-      property int zoneRadius: levelController.activeItem.zoneSize
+      property int zoneRadius: levelController.getTargetZoneSize()
       property int zoneSize: (zoneRadius * 2 + 1)
       Repeater {
         model: zoneSize * zoneSize

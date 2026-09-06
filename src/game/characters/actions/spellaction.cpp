@@ -1,5 +1,6 @@
 #include "spellaction.h"
 #include "game.h"
+#include "i18n.h"
 
 void SpellAction::lookAtTarget()
 {
@@ -14,21 +15,32 @@ int SpellAction::getApCost() const
 
 bool SpellAction::trigger()
 {
-  QJSValue result;
+  auto* i18n = I18n::get();
+  auto* level = LevelTask::get();
+  bool  isInCombat = level && level->isInCombat(character);
 
-  switch (targetType)
+  if (!isInCombat || getApCost() <= character->getActionPoints())
   {
-  case ObjectTarget:
-    result = spell.useOn(character, target);
-    break ;
-  case PositionTarget:
-    result = spell.useAt(character, targetPosition.x(), targetPosition.y());
-    break ;
-  case NoTarget:
-    result = spell.use(character);
-    break ;
+    QJSValue result;
+
+    lookAtTarget();
+    switch (targetType)
+    {
+    case ObjectTarget:
+      result = spell.useOn(character, target);
+      break ;
+    case PositionTarget:
+      result = spell.useAt(character, targetPosition.x(), targetPosition.y());
+      break ;
+    case NoTarget:
+      result = spell.use(character);
+      break ;
+    }
+    return triggerAnimation(result);
   }
-  return triggerAnimation(result);
+  else
+    emit level->displayConsoleMessage(i18n->t("messages.not-enough-ap"));
+  return false;
 }
 
 void SpellAction::performAction()
@@ -37,7 +49,7 @@ void SpellAction::performAction()
   QJSValueList params;
 
   if (!callback.isCallable())
-    callback = spell.triggerUse;
+    callback = getDefaultCallback();
   params << character->asJSValue();
   switch (targetType)
   {
@@ -51,10 +63,11 @@ void SpellAction::performAction()
     break ;
   }
   success = Game::get()->scriptCall(callback, params, "SpellAction::performAction").toBool();
+  character->useActionPoints(getApCost(), "spellcasting");
   state = success ? Done : Interrupted;
 }
 
 QJSValue SpellAction::getDefaultCallback()
 {
-  return QJSValue();
+  return spell.triggerUse;
 }

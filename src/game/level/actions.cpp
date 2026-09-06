@@ -225,3 +225,51 @@ void ActionsComponent::pickUpItem(Character* character, InventoryItem* item)
   else if (character == getPlayer())
     Game::get()->appendToConsole(I18n::get()->t("message.cannot-carry-more"));
 }
+
+int ActionsComponent::getUseSuccessRate(DynamicObject* target) const
+{
+  switch (interactionType)
+  {
+  case SkillUse:
+    return 100;
+  case SpellUse:
+    return Spell::requireSpell(activeSkill).getUseSuccessRate(getPlayer(), target);
+  case ItemUse:
+    if (activeItem)
+      return activeItem->getUseSuccessRate(target);
+    break ;
+  }
+  return 0;
+}
+
+int ActionsComponent::getUseAtSuccessRate(int x, int y) const
+{
+  switch (interactionType)
+  {
+  case SkillUse:
+    return 1;
+  case SpellUse:
+    return Spell::requireSpell(activeSkill).getUseSuccessRateAt(getPlayer(), x, y);
+  case ItemUse:
+    if (activeItem)
+      return activeItem->getUseAtSuccessRate(x, y);
+    break ;
+  }
+  return 0;
+}
+
+int ActionsComponent::getTargetZoneSize() const
+{
+  switch (interactionType)
+  {
+  case SkillUse:
+    break ;
+  case SpellUse:
+    return Spell::requireSpell(activeSkill).getZoneTargetSize(getPlayer());
+  case ItemUse:
+    if (activeItem)
+      return activeItem->getZoneTargetSize();
+    break ;
+  }
+  return 1;
+}

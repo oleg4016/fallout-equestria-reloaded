@@ -15,6 +15,9 @@ public:
   QJSValue useOn(Character* user, DynamicObject* target);
   QJSValue useAt(Character* user, int x, int y);
   QJSValue triggerUse;
+  int      getUseSuccessRate(Character*, DynamicObject*) const;
+  int      getUseSuccessRateAt(Character*, int x, int y) const;
+  int      getZoneTargetSize(Character* user) const;
 
 private:
   void initialize();

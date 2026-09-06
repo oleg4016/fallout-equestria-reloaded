@@ -53,3 +53,35 @@ QJSValue Spell::use(Character* user)
 {
   return callback.call(QJSValueList() << user->asJSValue());
 }
+
+int Spell::getUseSuccessRate(Character* user, DynamicObject* target) const
+{
+  if (target)
+  {
+    QJSValue hook = script.property("getUseSuccessRate");
+
+    if (hook.isCallable())
+      return hook.call(QJSValueList() << user->asJSValue() << target->asJSValue()).toInt();
+  }
+  return 1;
+}
+
+int Spell::getUseSuccessRateAt(Character* user, int x, int y) const
+{
+  QJSValue hook = script.property("getUseSuccessRateAt");
+
+  if (hook.isCallable())
+    return hook.call(QJSValueList() << user->asJSValue() << x << y).toInt();
+  return 1;
+}
+
+int Spell::getZoneTargetSize(Character* user) const
+{
+  QJSValue hook = script.property("zoneTargetSize");
+
+  if (hook.isCallable())
+    return hook.call(QJSValueList() << user->asJSValue()).toInt();
+  else if (hook.isNumber())
+    return hook.toInt();
+  return 1;
+}

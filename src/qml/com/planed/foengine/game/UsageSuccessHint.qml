@@ -39,18 +39,16 @@ Text {
   }
 
   function successRateHint() {
-    var   amount = null;
-    const item   = levelController.activeItem;
-    const weapon = item && item.itemType === "weapon";
+    let amount = null;
 
     switch (levelController.targetMode) {
     case Interaction.TargetMode.Character:
       if (target && target.getObjectType() === "Character")
-        amount = item.getUseSuccessRate(target);
+        amount = levelController.getUseSuccessRate(target);
       break ;
     case Interaction.TargetMode.Zone:
       if (targetTile && targetTile.length === 2)
-        amount = item.getUseAtSuccessRate(targetTile[0], targetTile[1]);
+        amount = levelController.getUseAtSuccessRate(targetTile[0], targetTile[1]);
       break ;
     default:
       break ;
