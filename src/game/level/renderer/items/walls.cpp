@@ -54,7 +54,7 @@ void WallsRenderer::renderWallsAt(std::vector<RenderItem>& out, QPoint position,
   const int64_t zKey              = ZOrder::forWall(position.x(), position.y(), m_mapSize.width(), hasVOrH);
   const bool    vwallCropEligible = position.x() >= m_playerPos.x();
   const bool    hwallCropEligible = position.y() >= m_playerPos.y();
-  const bool    blockCropEligible = vwallCropEligible || hwallCropEligible;
+  const bool    blockCropEligible = position.x() > m_playerPos.x() && position.y() > m_playerPos.y();
 
   if (block)
     pushWallFace(out, block, renderPosition + blockRenderPosition(block), zKey, blockCropEligible);

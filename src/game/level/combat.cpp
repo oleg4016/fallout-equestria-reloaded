@@ -41,7 +41,7 @@ void CombatComponent::registerDynamicObject(DynamicObject* object)
 void CombatComponent::unregisterDynamicObject(DynamicObject* object)
 {
   if (combat && object->isCharacter())
-    leaveCombat(reinterpret_cast<Character*>(object));
+    leaveCombat(dynamic_cast<Character*>(object));
   TextBubblesComponent::unregisterDynamicObject(object);
 }
 
@@ -108,6 +108,7 @@ void CombatComponent::leaveCombat(Character* character)
       onNextCombatTurn();
     if (index <= combatIterator && combatIterator > 0)
       combatIterator--;
+    finalizeArmorClassBonus(character);
     combattants.removeAll(character);
     emit combattantsChanged();
   }
