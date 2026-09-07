@@ -136,15 +136,16 @@ bool ActionQueue::start()
 
 void ActionQueue::reset()
 {
-  auto it = queue.begin();
+  auto copy = queue;
+  auto it = copy.begin();
 
-  if (it != queue.end())
+  if (it != copy.end())
   {
     (*it)->interrupt();
-    std::for_each(++it, queue.end(), [](ActionBase* action) { action->canceled(); });
+    std::for_each(++it, copy.end(), [](ActionBase* action) { action->canceled(); });
   }
-  stash.reserve(queue.size());
-  for (auto* entry : std::as_const(queue))
+  stash.reserve(copy.size());
+  for (auto* entry : std::as_const(copy))
     stash << entry;
   queue.clear();
   resetFlag = true;
