@@ -210,7 +210,7 @@ void TaskRunner::load(const QJsonObject& data)
     Task task;
 
     task.name           = taskData["name"].toString();
-    task.iterationCount = taskData["count"].toInt();
+    task.iterationCount = std::min<int>(taskData["count"].toInt(), MAX_TASK_OF_TYPE_ALLOWED);
     task.interval       = taskData["interval"].toInt();
     task.infinite       = taskData["infinite"].toBool();
     task.timeLeft       = taskData["timeLeft"].toInt();
